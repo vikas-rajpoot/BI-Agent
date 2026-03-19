@@ -1,7 +1,13 @@
+export interface SavedMessage {
+  id: string;
+  role: string;
+  content: string;
+}
+
 export interface SavedChat {
   id: string;
   title: string;
-  messages: { id: string; role: string; content: string }[];
+  messages: SavedMessage[];
   createdAt: number;
   updatedAt: number;
 }
@@ -38,5 +44,18 @@ export function setActiveId(id: string) {
 
 export function titleFromMessage(content: string): string {
   const clean = content.replace(/\n/g, " ").trim();
-  return clean.length > 40 ? clean.slice(0, 40) + "…" : clean;
+  return clean.length > 50 ? clean.slice(0, 50) + "…" : clean;
+}
+
+export function upsertChat(chats: SavedChat[], chatId: string, messages: SavedMessage[]): SavedChat[] {
+  return chats.map((c) => {
+    if (c.id !== chatId) return c;
+    // Set title from first user message if still default
+    let title = c.title;
+    if (title === "New chat" && messages.length > 0) {
+      const firstUser = messages.find((m) => m.role === "user");
+      if (firstUser) title = titleFromMessage(firstUser.content);
+    }
+    return { ...c, title, messages, updatedAt: Date.now() };
+  });
 }
