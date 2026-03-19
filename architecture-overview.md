@@ -1,3 +1,6 @@
+
+
+```
 User (Browser)
      │
      │  useChat() — Vercel AI SDK streaming protocol
@@ -41,3 +44,8 @@ User (Browser)
 │  Monday.com API v2   │
 │  (GraphQL, live)     │
 └─────────────────────┘
+```
+
+The key flow: User asks a question → backend fetches fresh Monday.com data → builds in-memory query engines → auto-generates Claude tools from board schemas → Claude decides which queries to run via tool-use → DataEngine executes filters/aggregations locally → Claude synthesizes the answer → streams back to the frontend word-by-word.
+
+Everything is stateless per request. No database, no cache, no preloaded data.
