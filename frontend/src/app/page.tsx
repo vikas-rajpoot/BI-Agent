@@ -12,9 +12,10 @@ const SUGGESTIONS = [
 ];
 
 export default function Home() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
   const { messages, input, handleInputChange, handleSubmit, isLoading, setInput, append } =
     useChat({
-      api: "/api/stream",
+      api: `${apiUrl}/api/stream`,
     });
 
   const chatRef = useRef<HTMLDivElement>(null);

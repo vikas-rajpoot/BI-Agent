@@ -33,9 +33,25 @@ app = FastAPI(title="BI Agent", docs_url=None, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ── CORS preflight handler ──────────────────────────────────────────
+# Explicit OPTIONS handler to ensure Vercel doesn't swallow preflight requests
+
+@app.options("/api/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        },
+    )
 
 
 # ── request / response models ───────────────────────────────────────
